@@ -9,7 +9,12 @@ export default function RootLayout() {
           headerShown: false,
         }}
       />
-      <Stack.Screen name="customers/index" />
+      <Stack.Screen
+        name="customers/index"
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 }

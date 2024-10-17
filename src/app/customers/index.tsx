@@ -1,22 +1,26 @@
 import { Text, View, StyleSheet, ScrollView, Pressable } from "react-native";
 import { colors } from "../../constants/colors";
 import { CustomerItem } from "../../components/customer-item";
+import { Header } from "@/src/components/header";
 
 export default function Customers() {
   return (
-    <View style={styles.container}>
-      <CustomerItem />
-      <CustomerItem />
-      <CustomerItem />
-      <Pressable style={styles.buttonCreate}>
-        <Text style={styles.textCreate}>Criar cliente</Text>
-      </Pressable>
+    <View>
+      <Header />
+      <View style={styles.content}>
+        <CustomerItem />
+        <CustomerItem />
+        <CustomerItem />
+        <Pressable style={styles.buttonCreate}>
+          <Text style={styles.textCreate}>Criar cliente</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  content: {
     backgroundColor: colors.background,
     flex: 1,
     padding: 16,
