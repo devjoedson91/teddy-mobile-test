@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, ScrollView, Pressable } from "react-native";
+import { Text, View, StyleSheet, Pressable, FlatList } from "react-native";
 import { colors } from "../../constants/colors";
 import { CustomerItem } from "../../components/customer-item";
 import { Header } from "@/src/components/header";
@@ -8,9 +8,20 @@ export default function Customers() {
     <View>
       <Header />
       <View style={styles.content}>
-        <CustomerItem />
-        <CustomerItem />
-        <CustomerItem />
+        <View>
+          <Text style={styles.textHeader}>
+            <Text style={{ fontWeight: "bold" }}>0</Text> clientes encontrados:
+          </Text>
+          <Text style={styles.textHeader}>Clientes por página: </Text>
+        </View>
+        <View style={{ height: "50%" }}>
+          <FlatList
+            data={Array.from({ length: 4 })}
+            contentContainerStyle={{ gap: 20 }}
+            renderItem={({ item }) => <CustomerItem />}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
         <Pressable style={styles.buttonCreate}>
           <Text style={styles.textCreate}>Criar cliente</Text>
         </Pressable>
@@ -38,5 +49,10 @@ const styles = StyleSheet.create({
     fontWeight: 700,
     color: colors.orange,
     fontSize: 14,
+  },
+  textHeader: {
+    fontSize: 18,
+    textAlign: "center",
+    fontWeight: 400,
   },
 });
