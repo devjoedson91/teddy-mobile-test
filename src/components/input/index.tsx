@@ -23,12 +23,13 @@ export function Input({
         control={control}
         rules={rules}
         name={name}
-        render={({ field }) => (
+        render={({ field: { value, onChange } }) => (
           <TextInput
             placeholder={placeholder}
             placeholderTextColor={colors.gray_2}
             style={styles.input}
-            {...field}
+            value={value || ""}
+            onChangeText={onChange}
           />
         )}
       />
