@@ -1,8 +1,10 @@
 export const colors = {
-  mainOrange: "#EC6724",
+  orange: "#EC6724",
   black: "#000000",
   white: "#FFFFFF",
   background: "#F5F5F5",
+  modalBackground: "#444444",
+  blue: "#0A84FF",
   gray_1: "#AAAAAA",
   gray_2: "#D9D9D9",
 };

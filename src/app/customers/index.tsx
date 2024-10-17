@@ -29,14 +29,14 @@ const styles = StyleSheet.create({
   buttonCreate: {
     height: 40,
     borderWidth: 2,
-    borderColor: colors.mainOrange,
+    borderColor: colors.orange,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 4,
   },
   textCreate: {
     fontWeight: 700,
-    color: colors.mainOrange,
+    color: colors.orange,
     fontSize: 14,
   },
 });
