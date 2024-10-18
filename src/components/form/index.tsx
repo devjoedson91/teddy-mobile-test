@@ -57,9 +57,7 @@ export function Form({ label, methodType, data }: FormProps) {
     setValue("companyValuation", formatCurrency(companyValuation));
   }, [companyValuation]);
 
-  function handleCreateCustomer(data: FormData) {
-    console.log(data);
-  }
+  function handleCreateOrEditCustomer(data: FormData) {}
 
   return (
     <View style={styles.formContainer}>
@@ -72,29 +70,30 @@ export function Form({ label, methodType, data }: FormProps) {
         placeholder="Digite o nome"
         error={errors.name?.message}
         keyboardType="default"
+        testID="name"
       />
 
       <FormInput
-        name="wage"
+        name="salary"
         label="Salário"
         control={control}
-        placeholder="Digite o salário"
         error={errors.salary?.message}
         keyboardType="numeric"
+        testID="salary"
       />
 
       <FormInput
-        name="companyWage"
+        name="companyValuation"
         label="Valor da empresa"
         control={control}
-        placeholder="Digite o valor da empresa"
         error={errors.companyValuation?.message}
         keyboardType="numeric"
+        testID="companyValuation"
       />
 
       <Pressable
         style={[styles.submit, !isValid && { opacity: 0.5 }]}
-        onPress={handleSubmit(handleCreateCustomer)}
+        onPress={handleSubmit(handleCreateOrEditCustomer)}
         disabled={!isValid}
       >
         <Text style={styles.submitText}>

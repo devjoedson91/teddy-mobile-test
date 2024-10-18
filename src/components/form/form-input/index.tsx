@@ -16,6 +16,7 @@ interface InputProps {
   rules?: object;
   error?: string;
   keyboardType: KeyboardTypeOptions;
+  testID?: string;
 }
 
 export function FormInput({
@@ -26,6 +27,7 @@ export function FormInput({
   placeholder,
   rules,
   keyboardType,
+  testID,
 }: InputProps) {
   return (
     <View style={styles.container}>
@@ -42,6 +44,7 @@ export function FormInput({
             value={value}
             onChangeText={onChange}
             keyboardType={keyboardType}
+            testID={testID}
           />
         )}
       />
