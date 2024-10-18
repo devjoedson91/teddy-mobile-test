@@ -24,7 +24,7 @@ export default function Welcome() {
   });
 
   function handleNavigation(data: FormData) {
-    router.push("/customers");
+    router.push("/home");
   }
 
   return (
@@ -51,17 +51,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 24,
-    paddingRight: 16,
-    paddingLeft: 16,
+    paddingRight: 20,
+    paddingLeft: 20,
     backgroundColor: colors.white,
   },
   welcomeText: {
     fontSize: 32,
     color: colors.black,
-    fontWeight: 400,
+    fontWeight: "400",
   },
   signIn: {
-    backgroundColor: colors.mainOrange,
+    backgroundColor: colors.orange,
     width: "100%",
     height: 60,
     borderRadius: 4,
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   signInText: {
-    fontWeight: 700,
+    fontWeight: "700",
     color: colors.white,
     fontSize: 24,
   },

@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 import { colors } from "@/src/constants/colors";
-import Feather from "@expo/vector-icons/Feather";
+import { DrawerToggleButton } from "@react-navigation/drawer";
 
 export function Header() {
   return (
@@ -16,9 +16,7 @@ export function Header() {
       <View style={styles.content}>
         <Image source={require("../../../assets/images/logo-teddy.png")} />
 
-        <Pressable>
-          <Feather name="menu" size={24} />
-        </Pressable>
+        <DrawerToggleButton />
       </View>
     </SafeAreaView>
   );
@@ -27,12 +25,17 @@ export function Header() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.white,
-    // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight! + 34 : 34,
-    height: 70,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight! : 24,
+    height: 120,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   },
   content: {
-    paddingLeft: 16,
-    paddingRight: 16,
+    paddingLeft: 20,
+    paddingRight: 20,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",

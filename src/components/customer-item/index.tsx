@@ -81,12 +81,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   nameText: {
-    fontWeight: 700,
+    fontWeight: "700",
     fontSize: 16,
   },
   valuesText: {
     fontSize: 14,
-    fontWeight: 400,
+    fontWeight: "400",
   },
   customerData: {
     alignItems: "center",
@@ -105,14 +105,14 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     textAlign: "center",
-    fontWeight: 700,
+    fontWeight: "700",
     fontSize: 20,
     color: colors.white,
     marginBottom: 4,
   },
   modalDescription: {
     textAlign: "center",
-    fontWeight: 400,
+    fontWeight: "400",
     fontSize: 16,
     color: colors.white,
     marginBottom: 20,
@@ -125,6 +125,6 @@ const styles = StyleSheet.create({
   optionText: {
     fontSize: 20,
     color: colors.blue,
-    fontWeight: 700,
+    fontWeight: "700",
   },
 });

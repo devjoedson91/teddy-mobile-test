@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: colors.gray_2,
     fontSize: 24,
-    fontWeight: 400,
+    fontWeight: "400",
     paddingRight: 12,
     paddingLeft: 12,
   },
