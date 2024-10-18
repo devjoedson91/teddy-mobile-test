@@ -11,11 +11,11 @@ const schema = z.object({
   name: z
     .string({ message: "O nome é obrigatório" })
     .min(1, { message: "O nome é obrigatório" }),
-  wage: z
+  salary: z
     .string({ message: "O salário é obrigatório" })
     .min(1, { message: "O salário é obrigatório" })
     .regex(/\d/g, { message: "Valor inválido" }),
-  companyWage: z
+  companyValuation: z
     .string({ message: "O valor da empresa é obrigatório" })
     .min(1, { message: "O valor da empresa é obrigatório" })
     .regex(/\d/g, { message: "Valor inválido" }),
@@ -23,7 +23,11 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-export function Form() {
+interface FormProps {
+  label: string;
+}
+
+export function Form({ label }: FormProps) {
   const {
     handleSubmit,
     control,
@@ -32,22 +36,22 @@ export function Form() {
     setValue,
   } = useForm<FormData>({
     defaultValues: {
-      wage: "",
-      companyWage: "",
+      salary: "",
+      companyValuation: "",
     },
     resolver: zodResolver(schema),
   });
 
-  const wage = watch("wage");
-  const companyWage = watch("companyWage");
+  const salary = watch("salary");
+  const companyValuation = watch("companyValuation");
 
   useEffect(() => {
-    setValue("wage", formatCurrency(wage));
-  }, [wage]);
+    setValue("salary", formatCurrency(salary));
+  }, [salary]);
 
   useEffect(() => {
-    setValue("companyWage", formatCurrency(companyWage));
-  }, [companyWage]);
+    setValue("companyValuation", formatCurrency(companyValuation));
+  }, [companyValuation]);
 
   function handleCreateCustomer(data: FormData) {
     console.log(data);
@@ -55,6 +59,8 @@ export function Form() {
 
   return (
     <View style={styles.formContainer}>
+      <Text style={styles.label}>{label}</Text>
+
       <FormInput
         name="name"
         label="Nome"
@@ -69,7 +75,7 @@ export function Form() {
         label="Salário"
         control={control}
         placeholder="Digite o salário"
-        error={errors.wage?.message}
+        error={errors.salary?.message}
         keyboardType="numeric"
       />
 
@@ -78,7 +84,7 @@ export function Form() {
         label="Valor da empresa"
         control={control}
         placeholder="Digite o valor da empresa"
-        error={errors.companyWage?.message}
+        error={errors.companyValuation?.message}
         keyboardType="numeric"
       />
 
@@ -109,5 +115,10 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: 18,
     fontWeight: "500",
+  },
+  label: {
+    color: colors.white,
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });

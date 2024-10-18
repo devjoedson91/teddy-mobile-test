@@ -50,8 +50,7 @@ export default function Home() {
             onPress={() => setFormVisible(false)}
           >
             <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Criar cliente</Text>
-              <Form />
+              <Form label="Criar cliente" />
             </View>
           </TouchableOpacity>
         </Modal>
@@ -86,11 +85,5 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     bottom: "20%",
     zIndex: 1,
-  },
-  modalTitle: {
-    color: colors.white,
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 20,
   },
 });

@@ -9,39 +9,52 @@ import {
 } from "react-native";
 import { colors } from "../../constants/colors";
 import { Pencil, Trash2 } from "lucide-react-native";
+import { Form } from "../form";
+import { CustomerProps } from "@/src/@types";
+import { formatCurrency } from "@/src/lib/utils";
 
-export function CustomerItem() {
-  const [visible, setVisible] = useState(false);
+export function CustomerItem({
+  name,
+  salary,
+  companyValuation,
+}: CustomerProps) {
+  const [alertVisible, setAlertVisible] = useState(false);
+
+  const [formVisible, setFormVisible] = useState(false);
 
   function handleRemoveCustomer() {}
 
   return (
     <View style={styles.containerItem}>
       <View style={styles.customerData}>
-        <Text style={styles.nameText}>Joedson</Text>
-        <Text style={styles.valuesText}>Salário: R$3.500,00</Text>
-        <Text style={styles.valuesText}>Empresa: R$120.000,00</Text>
+        <Text style={styles.nameText}>{name}</Text>
+        <Text style={styles.valuesText}>{`Salário: ${formatCurrency(
+          salary as string
+        )}`}</Text>
+        <Text style={styles.valuesText}>{`Empresa: ${formatCurrency(
+          companyValuation as string
+        )}`}</Text>
       </View>
       <View style={styles.controls}>
-        <Pressable>
-          <Pencil size={20} />
+        <Pressable onPress={() => setFormVisible(true)} testID="button-edit">
+          <Pencil size={20} color={colors.black} />
         </Pressable>
-        <Pressable onPress={() => setVisible(true)} testID="button-remove">
+        <Pressable onPress={() => setAlertVisible(true)} testID="button-remove">
           <Trash2 size={20} color="red" />
         </Pressable>
       </View>
 
       <Modal
-        visible={visible}
+        visible={alertVisible}
         animationType="fade"
-        onRequestClose={() => setVisible(false)}
+        onRequestClose={() => setAlertVisible(false)}
         transparent
         testID="modal-remove-customer"
       >
         <TouchableOpacity
           activeOpacity={1}
           style={styles.modalContainer}
-          onPress={() => setVisible(false)}
+          onPress={() => setAlertVisible(false)}
         >
           <View style={styles.modalContent}>
             <View>
@@ -53,9 +66,31 @@ export function CustomerItem() {
             <Pressable style={styles.option} onPress={handleRemoveCustomer}>
               <Text style={styles.optionText}>Excluir cliente</Text>
             </Pressable>
-            <Pressable style={styles.option} onPress={() => setVisible(false)}>
-              <Text style={styles.optionText}>Cancelar</Text>
+            <Pressable
+              style={styles.option}
+              onPress={() => setAlertVisible(false)}
+            >
+              <Text style={[styles.optionText, { color: colors.white }]}>
+                Cancelar
+              </Text>
             </Pressable>
+          </View>
+        </TouchableOpacity>
+      </Modal>
+
+      <Modal
+        visible={formVisible}
+        animationType="fade"
+        onRequestClose={() => setFormVisible(false)}
+        transparent
+      >
+        <TouchableOpacity
+          activeOpacity={1}
+          style={styles.formContainer}
+          onPress={() => setFormVisible(false)}
+        >
+          <View style={styles.formContent}>
+            <Form label="Editar cliente" />
           </View>
         </TouchableOpacity>
       </Modal>
@@ -96,7 +131,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   modalContent: {
-    backgroundColor: colors.modalBackground,
+    backgroundColor: colors.gray_3,
     padding: 16,
     borderRadius: 4,
     marginHorizontal: 20,
@@ -123,7 +158,22 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontSize: 20,
-    color: colors.blue,
+    color: colors.orange,
     fontWeight: "700",
+  },
+  formContainer: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    paddingHorizontal: 20,
+  },
+  formContent: {
+    backgroundColor: colors.gray_3,
+    width: "100%",
+    padding: 20,
+    borderRadius: 4,
+    position: "absolute",
+    alignSelf: "center",
+    bottom: "20%",
+    zIndex: 1,
   },
 });
