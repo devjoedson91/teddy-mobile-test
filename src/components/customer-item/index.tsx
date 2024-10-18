@@ -8,13 +8,12 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { colors } from "../../constants/colors";
-import Feather from "@expo/vector-icons/Feather";
-import Octicons from "@expo/vector-icons/Octicons";
+import { Pencil, Trash2 } from "lucide-react-native";
 
 export function CustomerItem() {
   const [visible, setVisible] = useState(false);
 
-  function handleDeleteCustomer() {}
+  function handleRemoveCustomer() {}
 
   return (
     <View style={styles.containerItem}>
@@ -25,13 +24,10 @@ export function CustomerItem() {
       </View>
       <View style={styles.controls}>
         <Pressable>
-          <Feather name="plus" size={20} />
+          <Pencil size={20} />
         </Pressable>
-        <Pressable>
-          <Octicons name="pencil" size={20} />
-        </Pressable>
-        <Pressable onPress={() => setVisible(true)}>
-          <Feather name="trash-2" size={20} color="red" />
+        <Pressable onPress={() => setVisible(true)} testID="button-remove">
+          <Trash2 size={20} color="red" />
         </Pressable>
       </View>
 
@@ -40,6 +36,7 @@ export function CustomerItem() {
         animationType="fade"
         onRequestClose={() => setVisible(false)}
         transparent
+        testID="modal-remove-customer"
       >
         <TouchableOpacity
           activeOpacity={1}
@@ -53,7 +50,7 @@ export function CustomerItem() {
                 Tem certeza que deseja excluir o cliente Eduardo
               </Text>
             </View>
-            <Pressable style={styles.option} onPress={handleDeleteCustomer}>
+            <Pressable style={styles.option} onPress={handleRemoveCustomer}>
               <Text style={styles.optionText}>Excluir cliente</Text>
             </Pressable>
             <Pressable style={styles.option} onPress={() => setVisible(false)}>
