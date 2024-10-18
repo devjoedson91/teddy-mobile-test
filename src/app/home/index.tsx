@@ -14,6 +14,7 @@ import { Header } from "@/src/components/header";
 import { DrawerSceneWrapper } from "../../components/drawer-scene-wrapper";
 import { Button } from "../../components/ui/button";
 import { Form } from "../../components/form";
+import { customerItemMock } from "@/src/components/__mocks__/customer-item.mock";
 
 export default function Home() {
   const [formVisible, setFormVisible] = useState(false);
@@ -32,7 +33,7 @@ export default function Home() {
           <FlatList
             data={Array.from({ length: 4 })}
             contentContainerStyle={{ gap: 20 }}
-            renderItem={({ item }) => <CustomerItem />}
+            renderItem={({ item }) => <CustomerItem data={customerItemMock} />}
             showsVerticalScrollIndicator={false}
           />
         </View>
@@ -50,7 +51,7 @@ export default function Home() {
             onPress={() => setFormVisible(false)}
           >
             <View style={styles.modalContent}>
-              <Form label="Criar cliente" />
+              <Form label="Criar cliente" methodType="post" />
             </View>
           </TouchableOpacity>
         </Modal>

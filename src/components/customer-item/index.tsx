@@ -10,14 +10,14 @@ import {
 import { colors } from "../../constants/colors";
 import { Pencil, Trash2 } from "lucide-react-native";
 import { Form } from "../form";
-import { CustomerProps } from "@/src/@types";
-import { formatCurrency } from "@/src/lib/utils";
+import { CustomerProps } from "../../@types";
+import { customerItemMock } from "../__mocks__/customer-item.mock";
 
-export function CustomerItem({
-  name,
-  salary,
-  companyValuation,
-}: CustomerProps) {
+interface CustomerItemProps {
+  data: CustomerProps;
+}
+
+export function CustomerItem({ data }: CustomerItemProps) {
   const [alertVisible, setAlertVisible] = useState(false);
 
   const [formVisible, setFormVisible] = useState(false);
@@ -27,13 +27,11 @@ export function CustomerItem({
   return (
     <View style={styles.containerItem}>
       <View style={styles.customerData}>
-        <Text style={styles.nameText}>{name}</Text>
-        <Text style={styles.valuesText}>{`Salário: ${formatCurrency(
-          salary as string
-        )}`}</Text>
-        <Text style={styles.valuesText}>{`Empresa: ${formatCurrency(
-          companyValuation as string
-        )}`}</Text>
+        <Text style={styles.nameText}>{data.name}</Text>
+        <Text style={styles.valuesText}>{`Salário: ${data.salary}`}</Text>
+        <Text
+          style={styles.valuesText}
+        >{`Empresa: ${data.companyValuation}`}</Text>
       </View>
       <View style={styles.controls}>
         <Pressable onPress={() => setFormVisible(true)} testID="button-edit">
@@ -83,6 +81,7 @@ export function CustomerItem({
         animationType="fade"
         onRequestClose={() => setFormVisible(false)}
         transparent
+        testID="modal-edit-customer"
       >
         <TouchableOpacity
           activeOpacity={1}
@@ -90,7 +89,11 @@ export function CustomerItem({
           onPress={() => setFormVisible(false)}
         >
           <View style={styles.formContent}>
-            <Form label="Editar cliente" />
+            <Form
+              label="Editar cliente"
+              methodType="put"
+              data={customerItemMock}
+            />
           </View>
         </TouchableOpacity>
       </Modal>

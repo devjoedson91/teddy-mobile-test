@@ -5,7 +5,8 @@ import { z } from "zod";
 import { FormInput } from "./form-input";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { colors } from "../../constants/colors";
-import { formatCurrency } from "@/src/lib/utils";
+import { formatCurrency } from "../../lib/utils";
+import { CustomerProps } from "../../@types";
 
 const schema = z.object({
   name: z
@@ -25,9 +26,11 @@ type FormData = z.infer<typeof schema>;
 
 interface FormProps {
   label: string;
+  methodType: "post" | "put";
+  data?: CustomerProps;
 }
 
-export function Form({ label }: FormProps) {
+export function Form({ label, methodType, data }: FormProps) {
   const {
     handleSubmit,
     control,
@@ -36,8 +39,9 @@ export function Form({ label }: FormProps) {
     setValue,
   } = useForm<FormData>({
     defaultValues: {
-      salary: "",
-      companyValuation: "",
+      name: data?.name || "",
+      salary: data?.salary || "",
+      companyValuation: data?.companyValuation || "",
     },
     resolver: zodResolver(schema),
   });
@@ -93,7 +97,9 @@ export function Form({ label }: FormProps) {
         onPress={handleSubmit(handleCreateCustomer)}
         disabled={!isValid}
       >
-        <Text style={styles.submitText}>Criar cliente</Text>
+        <Text style={styles.submitText}>
+          {methodType === "post" ? "Criar cliente" : "Editar cliente"}
+        </Text>
       </Pressable>
     </View>
   );
