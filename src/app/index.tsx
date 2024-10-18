@@ -1,7 +1,7 @@
 import { Text, View, StyleSheet, Pressable } from "react-native";
 import { colors } from "../constants/colors";
-import { router } from "expo-router";
-import { Input } from "../components/input";
+import { useRouter } from "expo-router";
+import { Input } from "../components/ui/input";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,6 +23,8 @@ export default function Welcome() {
     resolver: zodResolver(schema),
   });
 
+  const router = useRouter();
+
   function handleNavigation(data: FormData) {
     router.push("/home");
   }
@@ -38,7 +40,11 @@ export default function Welcome() {
         error={errors.name?.message}
       />
 
-      <Pressable style={styles.signIn} onPress={handleSubmit(handleNavigation)}>
+      <Pressable
+        style={styles.signIn}
+        onPress={handleSubmit(handleNavigation)}
+        accessibilityRole="button"
+      >
         <Text style={styles.signInText}>Entrar</Text>
       </Pressable>
     </View>
