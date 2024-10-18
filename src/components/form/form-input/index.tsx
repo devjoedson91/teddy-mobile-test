@@ -1,24 +1,35 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  KeyboardTypeOptions,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { Controller } from "react-hook-form";
-import { colors } from "../../constants/colors";
+import { colors } from "../../../constants/colors";
 
 interface InputProps {
   name: string;
+  label: string;
   control: any;
   placeholder?: string;
   rules?: object;
   error?: string;
+  keyboardType: KeyboardTypeOptions;
 }
 
-export function Input({
+export function FormInput({
   name,
+  label,
   control,
   error,
   placeholder,
   rules,
+  keyboardType,
 }: InputProps) {
   return (
     <View style={styles.container}>
+      <Text style={styles.label}>{label}</Text>
       <Controller
         control={control}
         rules={rules}
@@ -28,8 +39,9 @@ export function Input({
             placeholder={placeholder}
             placeholderTextColor={colors.gray_2}
             style={styles.input}
-            value={value || ""}
+            value={value}
             onChangeText={onChange}
+            keyboardType={keyboardType}
           />
         )}
       />
@@ -42,17 +54,24 @@ export function Input({
 const styles = StyleSheet.create({
   container: { width: "100%" },
   input: {
-    height: 60,
-    borderRadius: 4,
+    height: 48,
+    borderRadius: 8,
     borderWidth: 2,
     borderColor: colors.gray_2,
-    fontSize: 24,
+    fontSize: 16,
     fontWeight: "400",
     paddingRight: 12,
     paddingLeft: 12,
+    backgroundColor: "transparent",
+    color: colors.white,
   },
   errorText: {
     marginTop: 4,
-    color: "red",
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: colors.white,
+    marginBottom: 4,
   },
 });

@@ -96,12 +96,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    paddingHorizontal: 20,
   },
   modalContent: {
     backgroundColor: colors.modalBackground,
     padding: 16,
     borderRadius: 4,
-    marginHorizontal: 16,
+    marginHorizontal: 20,
+    width: "100%",
   },
   modalTitle: {
     textAlign: "center",
