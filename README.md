@@ -17,7 +17,7 @@ clientes selecionados.
    git https://github.com/devjoedson91/teddy-mobile-test.git
    ```
 
-2. Instalando dependencias
+2. Instalando dependências
 
    Abra o prompt de comando conforme o seu OS e execute:
 
@@ -31,6 +31,6 @@ clientes selecionados.
     npx expo start
    ```
 
-# Autor
+## Autor
 
 Joedson Ferreira
