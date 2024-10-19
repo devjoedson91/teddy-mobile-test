@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   textCreate: {
     fontWeight: "700",
     color: colors.orange,
-    fontSize: 14,
+    fontSize: 16,
   },
   buttonCreate: {
     width: "100%",

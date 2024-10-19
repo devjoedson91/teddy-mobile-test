@@ -12,6 +12,8 @@ import { Pencil, Trash2 } from "lucide-react-native";
 import { Form } from "../form";
 import { ClientsProps } from "../../@types";
 import { formatCurrency } from "../../lib/utils";
+import { CheckBox } from "../checkbox";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface ClientsItemProps {
   item: ClientsProps;
@@ -22,7 +24,50 @@ export function ClientItem({ item }: ClientsItemProps) {
 
   const [formVisible, setFormVisible] = useState(false);
 
+  const [checked, setChecked] = useState(false);
+
   function handleRemoveCustomer() {}
+
+  async function handleSelectClientItem() {
+    setChecked(!checked);
+
+    const prevStorage = await AsyncStorage.getItem("@client.item");
+
+    if (!prevStorage && !checked) {
+      const createClientList = [];
+
+      createClientList.push(item);
+
+      await AsyncStorage.setItem(
+        "@client.item",
+        JSON.stringify(createClientList)
+      );
+
+      return;
+    }
+
+    if (prevStorage) {
+      const listStorage = JSON.parse(prevStorage) as ClientsProps[];
+
+      const tempList = listStorage;
+
+      if (!checked) {
+        const indexItem = listStorage.findIndex(
+          (listItem) => listItem.id === item.id
+        );
+
+        if (indexItem !== -1) {
+          tempList.splice(indexItem, 1);
+
+          await AsyncStorage.setItem("@client.item", JSON.stringify(tempList));
+        } else {
+          tempList.push(item);
+
+          await AsyncStorage.setItem("@client.item", JSON.stringify(tempList));
+        }
+      }
+    }
+  }
 
   return (
     <View style={styles.containerItem}>
@@ -36,11 +81,12 @@ export function ClientItem({ item }: ClientsItemProps) {
         )}`}</Text>
       </View>
       <View style={styles.controls}>
+        <CheckBox checked={checked} onPress={handleSelectClientItem} />
         <Pressable onPress={() => setFormVisible(true)} testID="button-edit">
-          <Pencil size={20} color={colors.black} />
+          <Pencil size={24} color={colors.black} />
         </Pressable>
         <Pressable onPress={() => setAlertVisible(true)} testID="button-remove">
-          <Trash2 size={20} color="red" />
+          <Trash2 size={24} color="red" />
         </Pressable>
       </View>
 
@@ -138,7 +184,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: colors.gray_3,
-    padding: 16,
+    padding: 12,
     borderRadius: 4,
     marginHorizontal: 20,
     width: "100%",

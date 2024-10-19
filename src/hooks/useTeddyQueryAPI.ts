@@ -25,6 +25,7 @@ export function useCreateClient() {
 
   const createClient = useMutation({
     mutationFn: handleSubmit,
+    mutationKey: ["create-client"],
   });
 
   return createClient;
@@ -39,7 +40,23 @@ export function useUpdateClient(id?: number) {
 
   const updateClient = useMutation({
     mutationFn: handleSubmit,
+    mutationKey: ["update-client"],
   });
 
   return updateClient;
+}
+
+export function useRemoveClient(id?: number) {
+  async function handleRemoveClient() {
+    if (!id) return;
+
+    return await api.delete(`/users/${id}`);
+  }
+
+  const remove = useMutation({
+    mutationFn: handleRemoveClient,
+    mutationKey: ["remove-client"],
+  });
+
+  return remove;
 }

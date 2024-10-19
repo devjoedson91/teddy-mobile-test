@@ -22,7 +22,9 @@ export default function Home() {
 
   const [limitPerPage, setLimitPerPage] = useState(10);
 
-  const { data } = useGetClients(2, limitPerPage);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const { data, refetch } = useGetClients(currentPage, limitPerPage);
 
   return (
     <DrawerSceneWrapper>
@@ -40,11 +42,15 @@ export default function Home() {
               keyboardType="numeric"
               maxLength={2}
               value={String(limitPerPage)}
-              onChangeText={(value) => setLimitPerPage(Number(value))}
+              onChangeText={(value) => {
+                setLimitPerPage(Number(value));
+
+                refetch();
+              }}
             />
           </View>
         </View>
-        <View style={{ maxHeight: "75%" }}>
+        <View style={{ maxHeight: "60%" }}>
           <FlatList
             data={data?.clients}
             contentContainerStyle={{ gap: 20 }}
@@ -53,7 +59,40 @@ export default function Home() {
             keyExtractor={(item) => item.id.toString()}
           />
         </View>
+
         <Button title="Criar cliente" onPress={() => setFormVisible(true)} />
+
+        <View style={styles.pagination}>
+          <FlatList
+            data={Array.from({ length: data?.totalPages! })}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ gap: 10 }}
+            renderItem={({ item, index }) => (
+              <TouchableOpacity
+                onPress={() => {
+                  setCurrentPage(index + 1);
+
+                  refetch();
+                }}
+              >
+                <Text
+                  key={index}
+                  style={[
+                    styles.paginationText,
+                    currentPage === index + 1 && {
+                      backgroundColor: colors.orange,
+                      borderWidth: 0,
+                      color: colors.white,
+                    },
+                  ]}
+                >
+                  {index + 1}
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+        </View>
 
         <Modal
           visible={formVisible}
@@ -71,6 +110,7 @@ export default function Home() {
                 label="Criar cliente"
                 methodType="post"
                 onCloseModal={() => setFormVisible(false)}
+                refetch={refetch}
               />
             </View>
           </TouchableOpacity>
@@ -85,7 +125,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     flex: 1,
     padding: 20,
-    gap: 20,
+    gap: 30,
   },
   textHeader: {
     fontSize: 18,
@@ -118,5 +158,15 @@ const styles = StyleSheet.create({
   infoPagesContent: {
     alignSelf: "center",
     gap: 8,
+  },
+  pagination: {
+    alignSelf: "center",
+  },
+  paginationText: {
+    fontSize: 16,
+    padding: 8,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: colors.gray_1,
   },
 });
