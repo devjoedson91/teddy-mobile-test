@@ -17,6 +17,7 @@ import { Button } from "../../components/ui/button";
 import { Form } from "../../components/form";
 import { useGetClients } from "@/src/hooks/useTeddyQueryAPI";
 import { useFocusEffect } from "@react-navigation/native";
+import { Picker } from "@react-native-picker/picker";
 
 export default function Home() {
   const [formVisible, setFormVisible] = useState(false);
@@ -36,6 +37,10 @@ export default function Home() {
   );
 
   useEffect(() => {
+    refetch();
+  }, [limitPerPage, currentPage]);
+
+  useEffect(() => {
     !formVisible && refetch();
   }, [formVisible]);
 
@@ -50,17 +55,15 @@ export default function Home() {
           </Text>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text style={styles.textHeader}>Clientes por página: </Text>
-            <TextInput
-              style={styles.limitInput}
-              keyboardType="numeric"
-              maxLength={2}
-              value={String(limitPerPage)}
-              onChangeText={(value) => {
-                setLimitPerPage(Number(value));
-
-                refetch();
-              }}
-            />
+            <Picker
+              selectedValue={limitPerPage}
+              style={styles.picker}
+              onValueChange={(itemValue) => setLimitPerPage(itemValue)}
+            >
+              {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
+                <Picker.Item key={num} label={String(num)} value={num} />
+              ))}
+            </Picker>
           </View>
         </View>
         <View style={{ maxHeight: "60%" }}>
@@ -87,8 +90,6 @@ export default function Home() {
               <TouchableOpacity
                 onPress={() => {
                   setCurrentPage(index + 1);
-
-                  refetch();
                 }}
               >
                 <Text
@@ -180,7 +181,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     padding: 8,
     borderRadius: 4,
-    borderWidth: 1,
-    borderColor: colors.gray_1,
+    backgroundColor: colors.white,
+  },
+  picker: {
+    height: 50,
+    width: 100,
   },
 });

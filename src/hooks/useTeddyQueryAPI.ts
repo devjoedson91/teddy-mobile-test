@@ -2,7 +2,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { ClientsProps, ClientsQueryRequestProps } from "../@types";
 import api from "../services/api";
 
-export function useGetClients(page: number, limit: number = 10) {
+export function useGetClients(page: number, limit: number) {
   const query = useQuery({
     queryFn: async (): Promise<ClientsQueryRequestProps> => {
       const response = await api.get<ClientsQueryRequestProps>(

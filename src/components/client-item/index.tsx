@@ -188,11 +188,11 @@ export function ClientItem({ item, refetch }: ClientsItemProps) {
 const styles = StyleSheet.create({
   containerItem: {
     width: "100%",
-    height: 138,
+    height: 140,
     padding: 16,
     backgroundColor: colors.white,
     borderRadius: 4,
-    justifyContent: "space-between",
+    gap: 8,
   },
   controls: {
     flexDirection: "row",

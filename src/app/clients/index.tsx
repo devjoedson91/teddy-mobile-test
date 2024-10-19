@@ -37,8 +37,6 @@ export default function Clients() {
       return !selectedItems.some((selected) => selected.id === item.id);
     });
 
-    console.log(updatedList);
-
     await AsyncStorage.setItem("@client.item", JSON.stringify(updatedList));
 
     getClientListStorage();
