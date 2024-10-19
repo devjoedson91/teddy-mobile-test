@@ -12,7 +12,6 @@ export function useGetClients(page: number, limit: number = 10) {
       return response.data;
     },
     queryKey: ["get-clients"],
-    refetchOnWindowFocus: true,
   });
 
   return query;

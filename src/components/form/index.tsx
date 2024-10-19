@@ -7,8 +7,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { colors } from "../../constants/colors";
 import { formatCurrency } from "../../lib/utils";
 import { ClientsProps } from "../../@types";
-import api from "../../services/api";
-import { useCreateClient, useUpdateClient } from "@/src/hooks/useTeddyQueryAPI";
+import { useCreateClient, useUpdateClient } from "../../hooks/useTeddyQueryAPI";
 
 const schema = z.object({
   name: z

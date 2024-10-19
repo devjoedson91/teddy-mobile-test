@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -16,6 +16,7 @@ import { DrawerSceneWrapper } from "../../components/drawer-scene-wrapper";
 import { Button } from "../../components/ui/button";
 import { Form } from "../../components/form";
 import { useGetClients } from "@/src/hooks/useTeddyQueryAPI";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function Home() {
   const [formVisible, setFormVisible] = useState(false);
@@ -25,6 +26,18 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data, refetch } = useGetClients(currentPage, limitPerPage);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+
+      return () => {};
+    }, [])
+  );
+
+  useEffect(() => {
+    !formVisible && refetch();
+  }, [formVisible]);
 
   return (
     <DrawerSceneWrapper>
@@ -54,7 +67,9 @@ export default function Home() {
           <FlatList
             data={data?.clients}
             contentContainerStyle={{ gap: 20 }}
-            renderItem={({ item }) => <ClientItem item={item} />}
+            renderItem={({ item }) => (
+              <ClientItem item={item} refetch={refetch} />
+            )}
             showsVerticalScrollIndicator={false}
             keyExtractor={(item) => item.id.toString()}
           />
@@ -97,7 +112,7 @@ export default function Home() {
         <Modal
           visible={formVisible}
           animationType="fade"
-          onRequestClose={() => setFormVisible(false)}
+          onRequestClose={() => refetch()}
           transparent
         >
           <TouchableOpacity
@@ -110,7 +125,6 @@ export default function Home() {
                 label="Criar cliente"
                 methodType="post"
                 onCloseModal={() => setFormVisible(false)}
-                refetch={refetch}
               />
             </View>
           </TouchableOpacity>
