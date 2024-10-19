@@ -28,8 +28,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 4,
-    position: "absolute",
-    alignSelf: "center",
-    bottom: 40,
   },
 });

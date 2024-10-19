@@ -4,13 +4,13 @@ import { Header } from "../../components/header";
 import { colors } from "../../constants/colors";
 import { Button } from "../../components/ui/button";
 
-export default function Customers() {
+export default function Clients() {
   return (
     <DrawerSceneWrapper>
       <Header />
       <View style={styles.content}>
         <Text style={styles.textHeader}>Clientes selecionados:</Text>
-        <Button title="Limpar clientes selecionados" />
+        <Button title="Limpar clientes selecionados" onPress={() => {}} />
       </View>
     </DrawerSceneWrapper>
   );

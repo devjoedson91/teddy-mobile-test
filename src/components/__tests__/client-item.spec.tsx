@@ -1,11 +1,11 @@
-import { act, fireEvent, render, waitFor } from "@testing-library/react-native";
-import { CustomerItem } from "../customer-item";
-import { customerItemMock } from "../__mocks__/customer-item.mock";
+import { act, fireEvent, render } from "@testing-library/react-native";
+import { ClientItem } from "../client-item";
+import { clientItemMock } from "../__mocks__/client-item.mock";
 import { formatCurrency } from "../../lib/utils";
 
 describe("Customer Item", () => {
   const renderComponent = () => {
-    return render(<CustomerItem data={customerItemMock} />);
+    return render(<ClientItem item={clientItemMock} />);
   };
 
   it("should render modal delete user", async () => {
@@ -47,10 +47,12 @@ describe("Customer Item", () => {
     const salary = queryByTestId("salary");
     const companyValuation = queryByTestId("companyValuation");
 
-    expect(name?.props.value).toBe(customerItemMock.name);
-    expect(salary?.props.value).toBe(formatCurrency(customerItemMock.salary));
+    expect(name?.props.value).toBe(clientItemMock.name);
+    expect(salary?.props.value).toBe(
+      formatCurrency(String(clientItemMock.salary))
+    );
     expect(companyValuation?.props.value).toBe(
-      formatCurrency(customerItemMock.companyValuation)
+      formatCurrency(String(clientItemMock.companyValuation))
     );
   });
 });

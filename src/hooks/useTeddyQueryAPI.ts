@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { ClientsProps, ClientsQueryRequestProps } from "../@types";
 import api from "../services/api";
 
@@ -12,8 +12,34 @@ export function useGetClients(page: number, limit: number = 10) {
       return response.data;
     },
     queryKey: ["get-clients"],
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
   });
 
   return query;
+}
+
+export function useCreateClient() {
+  async function handleSubmit(data: Omit<ClientsProps, "id">) {
+    return await api.post("/users", data);
+  }
+
+  const createClient = useMutation({
+    mutationFn: handleSubmit,
+  });
+
+  return createClient;
+}
+
+export function useUpdateClient(id?: number) {
+  async function handleSubmit(data: Omit<ClientsProps, "id">) {
+    if (!id) return;
+
+    return await api.patch(`/users/${id}`, data);
+  }
+
+  const updateClient = useMutation({
+    mutationFn: handleSubmit,
+  });
+
+  return updateClient;
 }

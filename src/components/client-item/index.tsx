@@ -17,7 +17,7 @@ interface ClientsItemProps {
   item: ClientsProps;
 }
 
-export function CustomerItem({ item }: ClientsItemProps) {
+export function ClientItem({ item }: ClientsItemProps) {
   const [alertVisible, setAlertVisible] = useState(false);
 
   const [formVisible, setFormVisible] = useState(false);

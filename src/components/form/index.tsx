@@ -8,6 +8,7 @@ import { colors } from "../../constants/colors";
 import { formatCurrency } from "../../lib/utils";
 import { ClientsProps } from "../../@types";
 import api from "../../services/api";
+import { useCreateClient, useUpdateClient } from "@/src/hooks/useTeddyQueryAPI";
 
 const schema = z.object({
   name: z
@@ -49,6 +50,12 @@ export function Form({ label, methodType, data, onCloseModal }: FormProps) {
     resolver: zodResolver(schema),
   });
 
+  const { mutate: create, isPending: createPending } = useCreateClient();
+
+  const { mutate: update, isPending: updatePending } = useUpdateClient(
+    data?.id
+  );
+
   const salary = watch("salary");
   const companyValuation = watch("companyValuation");
 
@@ -60,7 +67,7 @@ export function Form({ label, methodType, data, onCloseModal }: FormProps) {
     setValue("companyValuation", formatCurrency(companyValuation));
   }, [companyValuation]);
 
-  async function handleCreateOrEditCustomer(formData: FormData) {
+  function handleCreateOrEditCustomer(formData: FormData) {
     const body = {
       name: formData.name,
       salary: Number(formData.salary.replace(/[R$\., ]/g, "")),
@@ -71,13 +78,13 @@ export function Form({ label, methodType, data, onCloseModal }: FormProps) {
 
     try {
       if (methodType === "post") {
-        await api.post("/users", body);
+        create(body);
 
         reset();
       } else if (methodType === "patch") {
         if (!data?.id) return;
 
-        await api.patch(`/users/${data.id}`, body);
+        update(body);
       }
 
       onCloseModal();
@@ -121,7 +128,7 @@ export function Form({ label, methodType, data, onCloseModal }: FormProps) {
       <Pressable
         style={[styles.submit, !isValid && { opacity: 0.5 }]}
         onPress={handleSubmit(handleCreateOrEditCustomer)}
-        disabled={!isValid}
+        disabled={!isValid || createPending || updatePending}
       >
         <Text style={styles.submitText}>
           {methodType === "post" ? "Criar cliente" : "Editar cliente"}

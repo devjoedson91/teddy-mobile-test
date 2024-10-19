@@ -7,9 +7,10 @@ import {
   FlatList,
   Modal,
   TouchableOpacity,
+  TextInput,
 } from "react-native";
 import { colors } from "../../constants/colors";
-import { CustomerItem } from "../../components/customer-item";
+import { ClientItem } from "../../components/client-item";
 import { Header } from "@/src/components/header";
 import { DrawerSceneWrapper } from "../../components/drawer-scene-wrapper";
 import { Button } from "../../components/ui/button";
@@ -19,24 +20,35 @@ import { useGetClients } from "@/src/hooks/useTeddyQueryAPI";
 export default function Home() {
   const [formVisible, setFormVisible] = useState(false);
 
-  const { data, isError, isFetching } = useGetClients(2);
+  const [limitPerPage, setLimitPerPage] = useState(10);
+
+  const { data } = useGetClients(2, limitPerPage);
 
   return (
     <DrawerSceneWrapper>
       <Header />
       <View style={styles.content}>
-        <View>
+        <View style={styles.infoPagesContent}>
           <Text style={styles.textHeader}>
             <Text style={{ fontWeight: "bold" }}>{data?.clients.length}</Text>{" "}
             clientes encontrados:
           </Text>
-          <Text style={styles.textHeader}>Clientes por página: </Text>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={styles.textHeader}>Clientes por página: </Text>
+            <TextInput
+              style={styles.limitInput}
+              keyboardType="numeric"
+              maxLength={2}
+              value={String(limitPerPage)}
+              onChangeText={(value) => setLimitPerPage(Number(value))}
+            />
+          </View>
         </View>
         <View style={{ maxHeight: "75%" }}>
           <FlatList
             data={data?.clients}
             contentContainerStyle={{ gap: 20 }}
-            renderItem={({ item }) => <CustomerItem item={item} />}
+            renderItem={({ item }) => <ClientItem item={item} />}
             showsVerticalScrollIndicator={false}
             keyExtractor={(item) => item.id.toString()}
           />
@@ -94,5 +106,17 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     bottom: "20%",
     zIndex: 1,
+  },
+  limitInput: {
+    borderWidth: 1,
+    borderColor: colors.gray_1,
+    borderRadius: 4,
+    width: 30,
+    paddingHorizontal: 6,
+    fontSize: 18,
+  },
+  infoPagesContent: {
+    alignSelf: "center",
+    gap: 8,
   },
 });
