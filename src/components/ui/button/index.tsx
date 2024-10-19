@@ -21,11 +21,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   buttonCreate: {
+    width: "100%",
     height: 40,
     borderWidth: 2,
     borderColor: colors.orange,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 4,
+    position: "absolute",
+    alignSelf: "center",
+    bottom: 40,
   },
 });

@@ -14,10 +14,12 @@ import { Header } from "@/src/components/header";
 import { DrawerSceneWrapper } from "../../components/drawer-scene-wrapper";
 import { Button } from "../../components/ui/button";
 import { Form } from "../../components/form";
-import { customerItemMock } from "@/src/components/__mocks__/customer-item.mock";
+import { useGetClients } from "@/src/hooks/useTeddyQueryAPI";
 
 export default function Home() {
   const [formVisible, setFormVisible] = useState(false);
+
+  const { data, isError, isFetching } = useGetClients(2);
 
   return (
     <DrawerSceneWrapper>
@@ -25,16 +27,18 @@ export default function Home() {
       <View style={styles.content}>
         <View>
           <Text style={styles.textHeader}>
-            <Text style={{ fontWeight: "bold" }}>0</Text> clientes encontrados:
+            <Text style={{ fontWeight: "bold" }}>{data?.clients.length}</Text>{" "}
+            clientes encontrados:
           </Text>
           <Text style={styles.textHeader}>Clientes por página: </Text>
         </View>
-        <View style={{ height: "50%" }}>
+        <View style={{ maxHeight: "75%" }}>
           <FlatList
-            data={Array.from({ length: 4 })}
+            data={data?.clients}
             contentContainerStyle={{ gap: 20 }}
-            renderItem={({ item }) => <CustomerItem data={customerItemMock} />}
+            renderItem={({ item }) => <CustomerItem item={item} />}
             showsVerticalScrollIndicator={false}
+            keyExtractor={(item) => item.id.toString()}
           />
         </View>
         <Button title="Criar cliente" onPress={() => setFormVisible(true)} />
@@ -51,7 +55,11 @@ export default function Home() {
             onPress={() => setFormVisible(false)}
           >
             <View style={styles.modalContent}>
-              <Form label="Criar cliente" methodType="post" />
+              <Form
+                label="Criar cliente"
+                methodType="post"
+                onCloseModal={() => setFormVisible(false)}
+              />
             </View>
           </TouchableOpacity>
         </Modal>

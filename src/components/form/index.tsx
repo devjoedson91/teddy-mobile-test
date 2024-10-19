@@ -6,7 +6,8 @@ import { FormInput } from "./form-input";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { colors } from "../../constants/colors";
 import { formatCurrency } from "../../lib/utils";
-import { CustomerProps } from "../../@types";
+import { ClientsProps } from "../../@types";
+import api from "../../services/api";
 
 const schema = z.object({
   name: z
@@ -26,22 +27,24 @@ type FormData = z.infer<typeof schema>;
 
 interface FormProps {
   label: string;
-  methodType: "post" | "put";
-  data?: CustomerProps;
+  methodType: "post" | "patch";
+  data?: ClientsProps;
+  onCloseModal(): void;
 }
 
-export function Form({ label, methodType, data }: FormProps) {
+export function Form({ label, methodType, data, onCloseModal }: FormProps) {
   const {
     handleSubmit,
     control,
     formState: { errors, isValid },
     watch,
     setValue,
+    reset,
   } = useForm<FormData>({
     defaultValues: {
       name: data?.name || "",
-      salary: data?.salary || "",
-      companyValuation: data?.companyValuation || "",
+      salary: String(data?.salary) || "",
+      companyValuation: String(data?.companyValuation) || "",
     },
     resolver: zodResolver(schema),
   });
@@ -57,7 +60,31 @@ export function Form({ label, methodType, data }: FormProps) {
     setValue("companyValuation", formatCurrency(companyValuation));
   }, [companyValuation]);
 
-  function handleCreateOrEditCustomer(data: FormData) {}
+  async function handleCreateOrEditCustomer(formData: FormData) {
+    const body = {
+      name: formData.name,
+      salary: Number(formData.salary.replace(/[R$\., ]/g, "")),
+      companyValuation: Number(
+        formData.companyValuation.replace(/[R$\., ]/g, "")
+      ),
+    };
+
+    try {
+      if (methodType === "post") {
+        await api.post("/users", body);
+
+        reset();
+      } else if (methodType === "patch") {
+        if (!data?.id) return;
+
+        await api.patch(`/users/${data.id}`, body);
+      }
+
+      onCloseModal();
+    } catch (error: any) {
+      console.log(error);
+    }
+  }
 
   return (
     <View style={styles.formContainer}>

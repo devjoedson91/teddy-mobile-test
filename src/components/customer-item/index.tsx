@@ -10,14 +10,14 @@ import {
 import { colors } from "../../constants/colors";
 import { Pencil, Trash2 } from "lucide-react-native";
 import { Form } from "../form";
-import { CustomerProps } from "../../@types";
-import { customerItemMock } from "../__mocks__/customer-item.mock";
+import { ClientsProps } from "../../@types";
+import { formatCurrency } from "../../lib/utils";
 
-interface CustomerItemProps {
-  data: CustomerProps;
+interface ClientsItemProps {
+  item: ClientsProps;
 }
 
-export function CustomerItem({ data }: CustomerItemProps) {
+export function CustomerItem({ item }: ClientsItemProps) {
   const [alertVisible, setAlertVisible] = useState(false);
 
   const [formVisible, setFormVisible] = useState(false);
@@ -27,11 +27,13 @@ export function CustomerItem({ data }: CustomerItemProps) {
   return (
     <View style={styles.containerItem}>
       <View style={styles.customerData}>
-        <Text style={styles.nameText}>{data.name}</Text>
-        <Text style={styles.valuesText}>{`Salário: ${data.salary}`}</Text>
-        <Text
-          style={styles.valuesText}
-        >{`Empresa: ${data.companyValuation}`}</Text>
+        <Text style={styles.nameText}>{item.name}</Text>
+        <Text style={styles.valuesText}>{`Salário: ${formatCurrency(
+          String(item.salary)
+        )}`}</Text>
+        <Text style={styles.valuesText}>{`Empresa: ${formatCurrency(
+          String(item.companyValuation)
+        )}`}</Text>
       </View>
       <View style={styles.controls}>
         <Pressable onPress={() => setFormVisible(true)} testID="button-edit">
@@ -91,8 +93,9 @@ export function CustomerItem({ data }: CustomerItemProps) {
           <View style={styles.formContent}>
             <Form
               label="Editar cliente"
-              methodType="put"
-              data={customerItemMock}
+              methodType="patch"
+              data={item}
+              onCloseModal={() => setFormVisible(false)}
             />
           </View>
         </TouchableOpacity>
@@ -105,7 +108,7 @@ const styles = StyleSheet.create({
   containerItem: {
     width: "100%",
     height: 138,
-    padding: 12,
+    padding: 16,
     backgroundColor: colors.white,
     borderRadius: 4,
     justifyContent: "space-between",
