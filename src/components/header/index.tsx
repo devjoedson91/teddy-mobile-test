@@ -1,20 +1,22 @@
 import {
   Image,
   Platform,
-  Pressable,
   SafeAreaView,
   StatusBar,
   StyleSheet,
   View,
 } from "react-native";
-import { colors } from "@/src/constants/colors";
+import { colors } from "../../constants/colors";
 import { DrawerToggleButton } from "@react-navigation/drawer";
 
 export function Header() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Image source={require("../../../assets/images/logo-teddy.png")} />
+        <Image
+          source={require("../../../assets/images/logo-teddy.png")}
+          testID="logo"
+        />
 
         <DrawerToggleButton />
       </View>

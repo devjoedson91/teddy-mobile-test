@@ -18,7 +18,7 @@
       "@testing-library/jest-native/extend-expect"
     ],
     "transformIgnorePatterns": [
-      "node_modules/(?!(react-native|@react-native|react-navigation|@react-navigation)/)"
+      "node_modules/@react-native-async-storage/async-storage/(?!(react-native|@react-native|react-navigation|@react-navigation)/)"
     ],
     "collectCoverage": true,
     "collectCoverageFrom": [
@@ -44,6 +44,7 @@
     "expo-system-ui": "~3.0.7",
     "expo-web-browser": "~13.0.3",
     "lucide-react-native": "^0.453.0",
+    "mock-async-storage": "^2.9.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.53.0",

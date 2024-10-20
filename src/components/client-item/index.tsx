@@ -6,7 +6,6 @@ import {
   Pressable,
   Modal,
   TouchableOpacity,
-  Alert,
 } from "react-native";
 import { colors } from "../../constants/colors";
 import { Pencil, Trash2 } from "lucide-react-native";
@@ -15,8 +14,8 @@ import { ClientsProps } from "../../@types";
 import { formatCurrency } from "../../lib/utils";
 import { CheckBox } from "../checkbox";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect, useRoute } from "@react-navigation/native";
-import { useRemoveClient } from "@/src/hooks/useTeddyQueryAPI";
+import { useFocusEffect, useNavigationState } from "@react-navigation/native";
+import { useRemoveClient } from "../../hooks/useTeddyQueryAPI";
 
 interface ClientsItemProps {
   item: ClientsProps;
@@ -24,7 +23,10 @@ interface ClientsItemProps {
 }
 
 export function ClientItem({ item, refetch }: ClientsItemProps) {
-  const route = useRoute();
+  const routeIndex = useNavigationState((state) => state.index);
+  const routeName = useNavigationState(
+    (state) => state.routes[routeIndex].name
+  );
 
   const [alertRemoveVisible, setAlertRemoveVisible] = useState(false);
 
@@ -107,7 +109,7 @@ export function ClientItem({ item, refetch }: ClientsItemProps) {
           checked={clientListStorage.some((client) => client.id === item.id)}
           onPress={handleSelectClientItem}
         />
-        {route.name !== "clients/index" && (
+        {routeName !== "clients/index" && (
           <>
             <Pressable
               onPress={() => setFormEditVisible(true)}
