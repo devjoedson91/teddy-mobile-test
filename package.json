@@ -15,10 +15,11 @@
     "preset": "react-native",
     "setupFilesAfterEnv": [
       "<rootDir>/jest.setup.ts",
-      "@testing-library/jest-native/extend-expect"
+      "@testing-library/jest-native/extend-expect",
+      "./node_modules/react-native-gesture-handler/jestSetup.js"
     ],
     "transformIgnorePatterns": [
-      "node_modules/@react-native-async-storage/async-storage/(?!(react-native|@react-native|react-navigation|@react-navigation)/)"
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg|react-native-reanimated|react-native-gesture-handler|@react-native-async-storage/async-storage|@react-native-async-storage/async-storage/jest/async-storage-mock)"
     ],
     "collectCoverage": true,
     "collectCoverageFrom": [
@@ -32,6 +33,7 @@
     "@react-native-picker/picker": "^2.8.1",
     "@react-navigation/drawer": "^6.7.2",
     "@react-navigation/native": "^6.0.2",
+    "@react-navigation/stack": "^6.4.1",
     "@tanstack/react-query": "^5.59.15",
     "axios": "^1.7.7",
     "expo": "~51.0.28",

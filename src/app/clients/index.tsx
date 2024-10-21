@@ -55,6 +55,7 @@ export default function Clients() {
             renderItem={({ item }) => <ClientItem item={item} />}
             showsVerticalScrollIndicator={false}
             keyExtractor={(item) => item.id.toString()}
+            testID="client-list"
           />
         </View>
 

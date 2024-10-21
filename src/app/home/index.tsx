@@ -3,11 +3,9 @@ import {
   Text,
   View,
   StyleSheet,
-  Pressable,
   FlatList,
   Modal,
   TouchableOpacity,
-  TextInput,
 } from "react-native";
 import { colors } from "../../constants/colors";
 import { ClientItem } from "../../components/client-item";
