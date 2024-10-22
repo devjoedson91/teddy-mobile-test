@@ -9,11 +9,11 @@ import {
 } from "react-native";
 import { colors } from "../../constants/colors";
 import { ClientItem } from "../../components/client-item";
-import { Header } from "@/src/components/header";
+import { Header } from "../../components/header";
 import { DrawerSceneWrapper } from "../../components/drawer-scene-wrapper";
 import { Button } from "../../components/ui/button";
 import { Form } from "../../components/form";
-import { useGetClients } from "@/src/hooks/useTeddyQueryAPI";
+import { useGetClients } from "../../hooks/useTeddyQueryAPI";
 import { useFocusEffect } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
 

@@ -108,6 +108,7 @@ export function ClientItem({ item, refetch }: ClientsItemProps) {
         <CheckBox
           checked={clientListStorage.some((client) => client.id === item.id)}
           onPress={handleSelectClientItem}
+          testID="check-box"
         />
         {routeName !== "clients/index" && (
           <>

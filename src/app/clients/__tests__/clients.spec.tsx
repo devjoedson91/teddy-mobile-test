@@ -50,4 +50,16 @@ describe("Clients screen", () => {
       getByRole("button", { name: /Limpar clientes selecionados/i })
     ).toBeVisible();
   });
+
+  it.skip("should render client items storaged at async storage", async () => {
+    await asyncOperationOnAsyncStorage();
+
+    expect(AsyncStorage.getItem).toHaveBeenCalledWith("@client.item");
+
+    expect(AsyncStorage.getItem).toHaveLastReturnedWith(
+      JSON.stringify(clientsItemStorageMock)
+    );
+
+    // expect(AsyncStorage.getItem).toHaveBeenCalledWith("@client.item");
+  });
 });
