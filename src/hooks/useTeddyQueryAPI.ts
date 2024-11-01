@@ -1,6 +1,7 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { ClientsProps, ClientsQueryRequestProps } from "../@types";
 import api from "../services/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function useGetClients(page: number, limit: number) {
   const query = useQuery({
@@ -12,6 +13,23 @@ export function useGetClients(page: number, limit: number) {
       return response.data;
     },
     queryKey: ["get-clients"],
+  });
+
+  return query;
+}
+
+export function useClientListStorage() {
+  const query = useQuery({
+    queryFn: async (): Promise<ClientsProps[]> => {
+      const list = await AsyncStorage.getItem("@client.item");
+
+      if (list) {
+        return JSON.parse(list);
+      }
+
+      return [];
+    },
+    queryKey: ["clients-list-storage"],
   });
 
   return query;
@@ -58,4 +76,31 @@ export function useRemoveClient(id?: number) {
   });
 
   return remove;
+}
+
+export async function selectClientItem(item: ClientsProps) {
+  const listStorage = await AsyncStorage.getItem("@client.item");
+
+  const parseList = JSON.parse(listStorage || "[]") as ClientsProps[];
+
+  if (parseList.length) {
+    const clientExists = parseList.find((listItem) => listItem.id === item.id);
+
+    if (clientExists) {
+      const updateList = parseList.filter(
+        (clientItem) => clientItem.id !== clientExists.id
+      );
+
+      await AsyncStorage.setItem("@client.item", JSON.stringify(updateList));
+    } else {
+      await AsyncStorage.setItem(
+        "@client.item",
+        JSON.stringify([...parseList, item])
+      );
+    }
+  } else {
+    await AsyncStorage.setItem("@client.item", JSON.stringify([item]));
+  }
+
+  useClientListStorage().refetch();
 }

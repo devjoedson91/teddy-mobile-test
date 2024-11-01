@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { DrawerSceneWrapper } from "../../components/drawer-scene-wrapper";
 import { Header } from "../../components/header";
@@ -8,23 +8,18 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ClientsProps } from "../../@types";
 import { ClientItem } from "../../components/client-item";
 import { useFocusEffect } from "@react-navigation/native";
+import { useClientListStorage } from "../../hooks/useTeddyQueryAPI";
 
 export default function Clients() {
-  const [clientList, setClientList] = useState<ClientsProps[]>([]);
-
   useFocusEffect(
     useCallback(() => {
-      getClientListStorage();
+      refetch();
 
       return () => {};
     }, [])
   );
 
-  async function getClientListStorage() {
-    const list = await AsyncStorage.getItem("@client.item");
-
-    setClientList(JSON.parse(list || "[]"));
-  }
+  const { data: clientList, refetch } = useClientListStorage();
 
   async function handleRemoveClietListStorage() {
     const listStorage = await AsyncStorage.getItem("@client.item");
@@ -33,13 +28,13 @@ export default function Clients() {
 
     const tempList = clientList;
 
-    const updatedList = tempList.filter((item) => {
+    const updatedList = tempList?.filter((item) => {
       return !selectedItems.some((selected) => selected.id === item.id);
     });
 
     await AsyncStorage.setItem("@client.item", JSON.stringify(updatedList));
 
-    getClientListStorage();
+    refetch();
   }
 
   return (

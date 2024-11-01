@@ -1,5 +1,10 @@
 import "@testing-library/jest-native";
 import "react-native-gesture-handler/jestSetup";
+import * as ReactQuery from "@tanstack/react-query";
+
+jest.mock("@react-native-async-storage/async-storage", () =>
+  require("@react-native-async-storage/async-storage/jest/async-storage-mock")
+);
 
 jest.mock("expo-router", () => ({
   useRouter: jest.fn(),
@@ -12,12 +17,10 @@ jest.mock("@react-navigation/native", () => ({
   useNavigation: () => ({
     openDrawer: jest.fn(),
     closeDrawer: jest.fn(),
+    navigate: jest.fn(),
+    goBack: jest.fn(),
   }),
 }));
-
-jest.mock("@react-native-async-storage/async-storage", () =>
-  require("@react-native-async-storage/async-storage/jest/async-storage-mock")
-);
 
 jest.mock("react-native-reanimated", () => {
   const Reanimated = require("react-native-reanimated/mock");
@@ -38,4 +41,22 @@ jest.mock("react-native-reanimated", () => {
 
 jest.mock("@react-navigation/drawer", () => ({
   useDrawerProgress: jest.fn().mockReturnValue({ value: 0 }),
+}));
+
+jest.mock("@tanstack/react-query", () => {
+  const original: typeof ReactQuery = jest.requireActual(
+    "@tanstack/react-query"
+  );
+
+  return {
+    ...original,
+    useQuery: jest.fn(),
+  };
+});
+
+jest.mock("./src/hooks/useTeddyQueryAPI", () => ({
+  useGetClients: jest.fn(),
+  useRemoveClient: jest.fn(),
+  useClientListStorage: jest.fn(),
+  selectClientItem: jest.fn(),
 }));

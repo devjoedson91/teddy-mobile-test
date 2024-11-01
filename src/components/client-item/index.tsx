@@ -15,7 +15,11 @@ import { formatCurrency } from "../../lib/utils";
 import { CheckBox } from "../checkbox";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useNavigationState } from "@react-navigation/native";
-import { useRemoveClient } from "../../hooks/useTeddyQueryAPI";
+import {
+  selectClientItem,
+  useClientListStorage,
+  useRemoveClient,
+} from "../../hooks/useTeddyQueryAPI";
 
 interface ClientsItemProps {
   item: ClientsProps;
@@ -30,21 +34,27 @@ export function ClientItem({ item, refetch }: ClientsItemProps) {
 
   const [alertRemoveVisible, setAlertRemoveVisible] = useState(false);
 
-  const [clientListStorage, setClientlistStorage] = useState<ClientsProps[]>(
+  const [formEditVisible, setFormEditVisible] = useState(false);
+
+  const [clientListStorage, setClientListStorage] = useState<ClientsProps[]>(
     []
   );
 
-  const { mutate } = useRemoveClient(item.id);
-
-  const [formEditVisible, setFormEditVisible] = useState(false);
-
   useFocusEffect(
     useCallback(() => {
-      getClientListStorage();
+      refetchClientListStorage();
 
       return () => {};
     }, [])
   );
+
+  const { data, refetch: refetchClientListStorage } = useClientListStorage();
+
+  const { mutate } = useRemoveClient(item.id);
+
+  useEffect(() => {
+    data && setClientListStorage(data);
+  }, [data]);
 
   useEffect(() => {
     if (!formEditVisible || !alertRemoveVisible) {
@@ -52,49 +62,18 @@ export function ClientItem({ item, refetch }: ClientsItemProps) {
     }
   }, [formEditVisible, alertRemoveVisible]);
 
-  async function getClientListStorage() {
-    const list = await AsyncStorage.getItem("@client.item");
-
-    setClientlistStorage(JSON.parse(list || "[]"));
-  }
-
   function handleRemoveCustomer() {
     mutate();
 
     setAlertRemoveVisible(false);
   }
 
-  async function handleSelectClientItem() {
-    const listStorage = await AsyncStorage.getItem("@client.item");
-
-    const parseList = JSON.parse(listStorage || "[]") as ClientsProps[];
-
-    if (parseList.length) {
-      const clientExists = parseList.find(
-        (listItem) => listItem.id === item.id
-      );
-
-      if (clientExists) {
-        const updateList = parseList.filter(
-          (clientItem) => clientItem.id !== clientExists.id
-        );
-
-        await AsyncStorage.setItem("@client.item", JSON.stringify(updateList));
-      } else {
-        await AsyncStorage.setItem(
-          "@client.item",
-          JSON.stringify([...parseList, item])
-        );
-      }
-    } else {
-      await AsyncStorage.setItem("@client.item", JSON.stringify([item]));
-    }
-
-    getClientListStorage();
+  async function handleSelect() {
+    await selectClientItem(item);
   }
 
   return (
-    <View style={styles.containerItem}>
+    <View style={styles.containerItem} testID="client-item">
       <View style={styles.customerData}>
         <Text style={styles.nameText}>{item.name}</Text>
         <Text style={styles.valuesText}>{`Salário: ${formatCurrency(
@@ -107,8 +86,7 @@ export function ClientItem({ item, refetch }: ClientsItemProps) {
       <View style={styles.controls}>
         <CheckBox
           checked={clientListStorage.some((client) => client.id === item.id)}
-          onPress={handleSelectClientItem}
-          testID="check-box"
+          onPress={handleSelect}
         />
         {routeName !== "clients/index" && (
           <>

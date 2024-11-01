@@ -9,17 +9,23 @@ import { colors } from "../../constants/colors";
 
 interface Props extends TouchableOpacityProps {
   checked: boolean;
+  onPress(): void;
 }
 
-export function CheckBox({ checked, ...rest }: Props) {
+export function CheckBox({ checked, onPress }: Props) {
   return (
-    <TouchableOpacity activeOpacity={0.9} style={styles.checkButton} {...rest}>
+    <TouchableOpacity
+      activeOpacity={0.9}
+      style={styles.checkButton}
+      onPress={onPress}
+      testID="check-box"
+    >
       {checked ? (
-        <View style={styles.check}>
+        <View style={styles.check} testID="checked">
           <Check size={18} color={colors.white} />
         </View>
       ) : (
-        <View style={styles.unChecked} />
+        <View style={styles.unChecked} testID="unchecked" />
       )}
     </TouchableOpacity>
   );

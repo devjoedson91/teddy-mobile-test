@@ -1,8 +1,12 @@
 import { ReactNode } from "react";
-import { render, waitFor } from "@testing-library/react-native";
+import { render } from "@testing-library/react-native";
 import Clients from "..";
 import { clientsItemStorageMock } from "../../../components/__mocks__/client-item.mock";
-import AsyncStorage from "@react-native-async-storage/async-storage/jest/async-storage-mock";
+import {
+  useClientListStorage,
+  useRemoveClient,
+} from "../../../hooks/useTeddyQueryAPI";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 jest.mock("expo-router/drawer", () => {
   return {
@@ -21,25 +25,37 @@ jest.mock("@react-navigation/drawer", () => {
 
   return {
     ...actualDrawer,
-    DrawerToggleButton: ({ children }: { children: React.ReactNode }) => (
+    DrawerToggleButton: ({ children }: { children: ReactNode }) => (
       <>{children}</>
     ),
   };
 });
 
+jest.mock("../../../hooks/useTeddyQueryAPI", () => ({
+  useClientListStorage: jest.fn(),
+  useRemoveClient: jest.fn(),
+}));
+
+const queryClient = new QueryClient();
+
+const wrapper = ({ children }: { children: ReactNode }) => (
+  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+);
+
 const renderComponent = () => {
-  return render(<Clients />);
+  return render(<Clients />, { wrapper });
 };
 
 describe("Clients screen", () => {
-  async function asyncOperationOnAsyncStorage() {
-    await AsyncStorage.setItem(
-      "@client.item",
-      JSON.stringify(clientsItemStorageMock)
-    );
+  beforeAll(() => {
+    (useRemoveClient as jest.Mock).mockImplementation(() => ({
+      mutate: jest.fn(),
+    }));
+  });
 
-    await AsyncStorage.getItem("@client.item");
-  }
+  afterAll(() => {
+    jest.resetAllMocks();
+  });
 
   it("should render screen correctly", () => {
     const { getByText, getByRole } = renderComponent();
@@ -51,15 +67,18 @@ describe("Clients screen", () => {
     ).toBeVisible();
   });
 
-  it.skip("should render client items storaged at async storage", async () => {
-    await asyncOperationOnAsyncStorage();
+  it("should render client items storaged at async storage", async () => {
+    (useClientListStorage as jest.Mock).mockImplementationOnce(() => ({
+      data: clientsItemStorageMock.clients,
+      refetch: jest.fn(),
+    }));
 
-    expect(AsyncStorage.getItem).toHaveBeenCalledWith("@client.item");
+    const { findByText, queryByText } = renderComponent();
 
-    expect(AsyncStorage.getItem).toHaveLastReturnedWith(
-      JSON.stringify(clientsItemStorageMock)
-    );
+    const itemName1 = await findByText("Maria");
+    const itemName2 = queryByText("Joseane");
 
-    // expect(AsyncStorage.getItem).toHaveBeenCalledWith("@client.item");
+    expect(itemName1).toBeTruthy();
+    expect(itemName2).toBeTruthy();
   });
 });

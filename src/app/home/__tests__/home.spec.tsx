@@ -1,20 +1,13 @@
 import { ReactNode } from "react";
-import { render, renderHook, waitFor } from "@testing-library/react-native";
+import { render, waitFor } from "@testing-library/react-native";
 import Home from "..";
-import * as ReactQuery from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
+  useClientListStorage,
   useGetClients,
   useRemoveClient,
 } from "../../../hooks/useTeddyQueryAPI";
 import { clientsItemStorageMock } from "../../../components/__mocks__/client-item.mock";
-import AsyncStorage from "@react-native-async-storage/async-storage/jest/async-storage-mock";
-
-jest.mock(
-  "@react-native-async-storage/async-storage/jest/async-storage-mock",
-  () => ({
-    getItem: jest.fn(),
-  })
-);
 
 jest.mock("../../../components/drawer-scene-wrapper", () => ({
   DrawerSceneWrapper: ({ children }: { children: ReactNode }) => (
@@ -33,49 +26,18 @@ jest.mock("@react-navigation/drawer", () => {
   };
 });
 
-jest.mock("@tanstack/react-query", () => {
-  const original: typeof ReactQuery = jest.requireActual(
-    "@tanstack/react-query"
-  );
-
-  return {
-    ...original,
-    useQuery: jest.fn(),
-  };
-});
-
-jest.mock("../../../hooks/useTeddyQueryAPI", () => ({
-  useGetClients: jest.fn(),
-  useRemoveClient: jest.fn(),
-}));
-
-const queryClient = new ReactQuery.QueryClient();
-
-const renderComponent = () =>
-  render(
-    <ReactQuery.QueryClientProvider client={queryClient}>
-      <Home />
-    </ReactQuery.QueryClientProvider>
-  );
+const queryClient = new QueryClient();
 
 const wrapper = ({ children }: { children: ReactNode }) => (
-  <ReactQuery.QueryClientProvider client={queryClient}>
-    {children}
-  </ReactQuery.QueryClientProvider>
+  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 );
 
+const renderComponent = () => render(<Home />, { wrapper });
+
 describe("<Home />", () => {
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
-
-  it("should render client items mocked", async () => {
-    const dataResultMock = {
-      clients: clientsItemStorageMock,
-    };
-
+  beforeAll(() => {
     (useGetClients as jest.Mock).mockImplementation(() => ({
-      data: dataResultMock,
+      data: clientsItemStorageMock,
       isLoading: false,
       isError: false,
       isPending: false,
@@ -84,22 +46,39 @@ describe("<Home />", () => {
       refetch: jest.fn(),
     }));
 
+    (useClientListStorage as jest.Mock).mockResolvedValue(() => ({
+      data: clientsItemStorageMock.clients,
+      refetch: jest.fn(),
+    }));
+
     (useRemoveClient as jest.Mock).mockImplementation(() => ({
       mutate: jest.fn(),
     }));
+  });
 
-    const { result } = renderHook(() => useGetClients(1, 5), { wrapper });
+  afterAll(() => {
+    jest.resetAllMocks();
+  });
 
-    await waitFor(() => result.current);
+  it("should render client items mocked", async () => {
+    const { queryByText, findByText, debug } = renderComponent();
 
-    const { queryByText } = renderComponent();
+    const itemName1 = await findByText(/maria/i);
+    const itemName2 = queryByText(/joseane/i);
 
-    const name1 = queryByText(/maria/i);
-    const name2 = queryByText(/joseane/i);
-    const name3 = queryByText(/laercio/i);
+    expect(itemName1).toBeVisible();
+    expect(itemName2).toBeVisible();
 
-    expect(name1).toBeVisible();
-    expect(name2).toBeVisible();
-    expect(name3).toBeVisible();
+    debug();
+  });
+
+  it("should render amount client items per page", async () => {
+    const { queryAllByTestId } = renderComponent();
+
+    await waitFor(() => {
+      const itemsPerPage = queryAllByTestId("client-item");
+
+      expect(itemsPerPage.length).toBe(3);
+    });
   });
 });
