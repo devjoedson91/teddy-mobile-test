@@ -58,5 +58,7 @@ jest.mock("./src/hooks/useTeddyQueryAPI", () => ({
   useGetClients: jest.fn(),
   useRemoveClient: jest.fn(),
   useClientListStorage: jest.fn(),
+  useCreateClient: jest.fn(),
+  useUpdateClient: jest.fn(),
   selectClientItem: jest.fn(),
 }));

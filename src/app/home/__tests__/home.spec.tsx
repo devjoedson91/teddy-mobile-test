@@ -1,7 +1,6 @@
 import { ReactNode } from "react";
-import { render, waitFor } from "@testing-library/react-native";
+import { render, waitFor } from "test-utils";
 import Home from "..";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   useClientListStorage,
   useGetClients,
@@ -26,13 +25,7 @@ jest.mock("@react-navigation/drawer", () => {
   };
 });
 
-const queryClient = new QueryClient();
-
-const wrapper = ({ children }: { children: ReactNode }) => (
-  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-);
-
-const renderComponent = () => render(<Home />, { wrapper });
+const renderComponent = () => render(<Home />);
 
 describe("<Home />", () => {
   beforeAll(() => {
@@ -68,8 +61,6 @@ describe("<Home />", () => {
 
     expect(itemName1).toBeVisible();
     expect(itemName2).toBeVisible();
-
-    debug();
   });
 
   it("should render amount client items per page", async () => {

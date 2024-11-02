@@ -1,30 +1,22 @@
-import { ReactNode } from "react";
-import { act, fireEvent, render, waitFor } from "@testing-library/react-native";
+import { render, act, fireEvent } from "test-utils";
 import { ClientItem } from "../client-item";
 import {
   clientItemMock,
   clientsItemStorageMock,
 } from "../__mocks__/client-item.mock";
 import { formatCurrency } from "../../lib/utils";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   useClientListStorage,
   useGetClients,
   useRemoveClient,
+  useCreateClient,
+  useUpdateClient,
 } from "../../hooks/useTeddyQueryAPI";
 
-const queryClient = new QueryClient();
-
-const wrapper = ({ children }: { children: ReactNode }) => (
-  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-);
-
-const renderComponent = () => {
-  return render(<ClientItem item={clientItemMock} />, { wrapper });
-};
+const renderComponent = () => render(<ClientItem item={clientItemMock} />);
 
 describe("Client Item", () => {
-  beforeEach(() => {
+  beforeAll(() => {
     (useGetClients as jest.Mock).mockImplementation(() => ({
       data: clientsItemStorageMock,
       isLoading: false,
@@ -35,7 +27,20 @@ describe("Client Item", () => {
       getClientListStorage: jest.fn(),
     }));
 
+    (useClientListStorage as jest.Mock).mockResolvedValue(() => ({
+      data: clientsItemStorageMock.clients,
+      refetch: jest.fn(),
+    }));
+
     (useRemoveClient as jest.Mock).mockImplementation(() => ({
+      mutate: jest.fn(),
+    }));
+
+    (useCreateClient as jest.Mock).mockImplementation(() => ({
+      mutate: jest.fn(),
+    }));
+
+    (useUpdateClient as jest.Mock).mockImplementation(() => ({
       mutate: jest.fn(),
     }));
   });
@@ -44,18 +49,16 @@ describe("Client Item", () => {
     jest.resetAllMocks();
   });
 
-  it("should render modal delete user", async () => {
+  it("should render modal remove client", async () => {
     const { getByTestId, queryByTestId } = renderComponent();
 
     const buttonRemove = getByTestId("button-remove");
 
-    const modal = queryByTestId("modal-remove-customer");
-
-    expect(modal).toBeNull();
+    expect(queryByTestId("modal-remove-client")).toBeNull();
 
     await act(() => fireEvent.press(buttonRemove));
 
-    expect(buttonRemove).toBeTruthy();
+    expect(queryByTestId("modal-remove-client")).toBeVisible();
   });
 
   it("should render modal edit user", async () => {
@@ -63,13 +66,11 @@ describe("Client Item", () => {
 
     const buttonEdit = getByTestId("button-edit");
 
-    const modal = queryByTestId("modal-edit-customer");
-
-    expect(modal).toBeNull();
+    expect(queryByTestId("modal-edit-client")).toBeNull();
 
     await act(() => fireEvent.press(buttonEdit));
 
-    expect(buttonEdit).toBeTruthy();
+    expect(queryByTestId("modal-edit-client")).toBeVisible();
   });
 
   it("should show values in the fields for editing", async () => {
@@ -93,22 +94,14 @@ describe("Client Item", () => {
   });
 
   it("should change check status of the checkbox when it be clicked", async () => {
-    (useClientListStorage as jest.Mock).mockResolvedValueOnce(() => ({
-      data: clientsItemStorageMock.clients,
-      refetch: jest.fn(),
-    }));
+    const { findByTestId, queryByTestId, getByTestId, debug } =
+      renderComponent();
 
-    const { findByTestId, queryByTestId, debug } = renderComponent();
-
-    const checkbox = await findByTestId("check-box");
+    const checkbox = getByTestId("check-box");
 
     fireEvent.press(checkbox);
 
-    const itemChecked = await findByTestId("checked");
-
-    debug();
-
-    // const itemChecked = queryByTestId("checked");
+    // const itemChecked = queryByTestId("unchecked");
 
     // console.log(itemChecked);
 

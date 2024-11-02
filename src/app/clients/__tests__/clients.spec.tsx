@@ -1,12 +1,11 @@
 import { ReactNode } from "react";
-import { render } from "@testing-library/react-native";
+import { render } from "test-utils";
 import Clients from "..";
 import { clientsItemStorageMock } from "../../../components/__mocks__/client-item.mock";
 import {
   useClientListStorage,
   useRemoveClient,
 } from "../../../hooks/useTeddyQueryAPI";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 jest.mock("expo-router/drawer", () => {
   return {
@@ -36,20 +35,17 @@ jest.mock("../../../hooks/useTeddyQueryAPI", () => ({
   useRemoveClient: jest.fn(),
 }));
 
-const queryClient = new QueryClient();
-
-const wrapper = ({ children }: { children: ReactNode }) => (
-  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-);
-
-const renderComponent = () => {
-  return render(<Clients />, { wrapper });
-};
+const renderComponent = () => render(<Clients />);
 
 describe("Clients screen", () => {
   beforeAll(() => {
     (useRemoveClient as jest.Mock).mockImplementation(() => ({
       mutate: jest.fn(),
+    }));
+
+    (useClientListStorage as jest.Mock).mockResolvedValue(() => ({
+      data: clientsItemStorageMock.clients,
+      refetch: jest.fn(),
     }));
   });
 

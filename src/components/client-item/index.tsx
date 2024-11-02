@@ -111,7 +111,7 @@ export function ClientItem({ item, refetch }: ClientsItemProps) {
         animationType="fade"
         onRequestClose={() => setAlertRemoveVisible(false)}
         transparent
-        testID="modal-remove-customer"
+        testID="modal-remove-client"
       >
         <TouchableOpacity
           activeOpacity={1}
@@ -145,7 +145,7 @@ export function ClientItem({ item, refetch }: ClientsItemProps) {
         animationType="fade"
         onRequestClose={() => setFormEditVisible(false)}
         transparent
-        testID="modal-edit-customer"
+        testID="modal-edit-client"
       >
         <TouchableOpacity
           activeOpacity={1}
